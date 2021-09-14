@@ -27,22 +27,22 @@
 	//var_dump($all_files);
 	
 	//kontrollin ja võtan ainult fotod
-	$allowed_photo_types = ["images/jpeg", "image/png"];
+	$allowed_photo_types = ["image/jpeg", "image/png"];  //Käi putši nii palju aega raiskasin kirjavea tõttu
 	$all_photos = [];
 	foreach($all_files as $file){
 		$file_info = getimagesize($photo_dir .$file);
 		if(isset($file_info["mime"])){
-			if(in_array($file_info["mime"], $allowed_photo_types)){    //Midagi vale I dunno
+			if(in_array($file_info["mime"], $allowed_photo_types)){
 				array_push($all_photos, $file);
 			}//if in_array lõppeb
 	    }//if isset lõppeb
 	}//foreach lõppeb
 	
-	$file_count = count($all_files);
+	$file_count = count($all_photos);
 	$photo_num = mt_rand(0, $file_count - 1);
 	//echo $photo_num;
 	//<img src="photos/pilt.jpg" alt="Tallinna Ülikool">
-	$photo_html = '<img src="' .$photo_dir .$all_files[$photo_num] .'" alt="Tallinna Ülikool">';
+	$photo_html = '<img src="' .$photo_dir .$all_photos[$photo_num] . '" alt="Tallinna Ülikool">';
 	$photo_list_html = "\n <ul> \n";
 	
 	//tsükkel
@@ -55,7 +55,7 @@
 	//</ul>
 
 	for($i = 0; $i < $file_count; $i ++){
-		$photo_list_html .= "<li>" .$all_photos[$i] ."</li> \n";  //Midagi varasemalt on vale, vaata teiste töid lol
+		$photo_list_html .= "<li>" .$all_photos[$i] ."</li> \n";
 	}
 	$photo_list_html .= "</ul> \n";
 	
@@ -63,7 +63,7 @@
 	for($i = 0; $i < $file_count; $i ++){
 		$photo_select_html .= '<option value="' .$i .'">' .$all_photos[$i] ."</options> \n";
 	}
-	$photo_select_html .= "</select> /ln";
+	$photo_select_html .= "</select> \n";
 ?>
 
 <!DOCTYPE html>
