@@ -27,7 +27,7 @@
 	//var_dump($all_files);
 	
 	//kontrollin ja võtan ainult fotod
-	$allowed_photo_types = ["image/jpeg", "image/png"];  //Käi putši nii palju aega raiskasin kirjavea tõttu
+	$allowed_photo_types = ["image/jpeg", "image/png"];  
 	$all_photos = [];
 	foreach($all_files as $file){
 		$file_info = getimagesize($photo_dir .$file);
@@ -43,7 +43,6 @@
 	//echo $photo_num;
 	//<img src="photos/pilt.jpg" alt="Tallinna Ülikool">
 	$photo_html = '<img src="' .$photo_dir .$all_photos[$photo_num] . '" alt="Tallinna Ülikool">';
-	$photo_list_html = "\n <ul> \n";
 	
 	//tsükkel
 	//for($i=algväärtus; $i < piirväärtus; $i muutumine)(...)
@@ -53,13 +52,29 @@
 	//...
 	//<li>pildifailn.jpg</li>
 	//</ul>
-
+	$photo_list_html = "\n <ul> \n";
 	for($i = 0; $i < $file_count; $i ++){
 		$photo_list_html .= "<li>" .$all_photos[$i] ."</li> \n";
 	}
 	$photo_list_html .= "</ul> \n";
 	
+	$picture_select_error = null;
+	$photo_choice = null;
+	$photo_choice_html = null;
+	$photo_choice_file = null;
+
+	if(isset($_POST["photo_select_input"])){
+		if(!empty($_POST["photo_select"])){
+			$photo_choice = $_POST["photo_select"];
+			$photo_choice_file = $all_photos[$photo_choice];
+			$photo_choice_html = '<img src="' .$photo_dir . $photo_choice_file . '" alt="Tallinna Ülikool">';
+	    }else{
+			$picture_select_error = '<img src="' .$photo_dir .$all_photos[$photo_num] . '" alt="Tallinna Ülikool">';
+			}
+		}
+
 	$photo_select_html = '<select name="photo_select">' ."\n";
+	$photo_select_html .='<option value="0">Valige pilt</option>' . "\n";
 	for($i = 0; $i < $file_count; $i ++){
 		$photo_select_html .= '<option value="' .$i .'">' .$all_photos[$i] ."</options> \n";
 	}
@@ -88,10 +103,14 @@
 	<hr>
 	
 	<form method="POST">
-		<?php echo $photo_select_html; ?>
+		<label for="photos">Vali pilt:</label>
+		<select name="photo_select" <?php echo $photo_select_html; ?>>
+		
+		<input type="submit" name="photo_select_input" value="Saada ära">
+		<?php echo $picture_select_error; ?>
 	</form>
-	
-	<?php echo $photo_html;
+
+	<?php echo $photo_choice_html;
 		  echo $photo_list_html;
 	?>
 </body>
