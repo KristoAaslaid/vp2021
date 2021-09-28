@@ -1,7 +1,7 @@
 <?php
     require_once("../../../config.php");
     require_once("fnc_general.php");
-    //require_once("fnc_user.php");
+	require_once("fnc_user.php");
 
     $notice = null;
     $firstname = null;
@@ -13,8 +13,7 @@
     $birth_day = null;
     $birth_date = null;
     $month_names_et = ["jaanuar", "veebruar", "märts", "aprill", "mai", "juuni","juuli", "august", "september", "oktoober", "november", "detsember"];
-
-    //muutujad võimalike veateadetega
+	 //muutujad võimalike veateadetega
     $firstname_error = null;
     $surname_error = null;
     $birth_month_error = null;
@@ -115,6 +114,12 @@
 			} else {
 				$confirm_password_error = "Palun sisesta salasõna teist korda veel";
 			}
+			
+			//kui kõik korras, salvestame
+			if(empty($firstname_error) and empty($surname_error) and empty($birth_month_error) and empty($_birth_year_error) and empty($birth_day_error) and empty($birth_date_error) and empty($gender_error) and empty($email_error) and empty($password_error) and empty($confirm_password_error)){
+				$notice = sign_up($firstname, $surname, $email, $gender, $birth_date, $_POST["password_input"]);
+			}
+			
         }//if isset lõppeb
     }//if request_method lõppeb
 ?>
