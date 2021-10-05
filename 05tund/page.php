@@ -1,27 +1,36 @@
 <?php
 	require_once("fnc_user.php");
     $author_name = "Kristo Aaslaid"; // https://www.php.net/manual/en/features.commandline.options.php
-	
 	//vaatan, mida POST meetodil saadeti
 	//var_dump($_POST);
 	
-	$today_html = null;
-	$today_adjective_error = null;
-	$todays_adjective = null;
-	//kontrollin, kas klikiti submit
-	if(isset($_POST["submit_todays_adjective"])){
-		//echo "Klikiti nuppu";
-		if(!empty($_POST["todays_adjective_input"])){
-		$today_html = "<p>Tänane päev on ".$_POST["todays_adjective_input"].".</p>";
-		$todays_adjective = $_POST["todays_adjective_input"];
-		} else {
-			$today_adjective_error = "Palun kirjutage tänase kohta omadussõna";
-		}
-	}
+	$email_error = null;
+    $password_error = null;
 	
 	//sisse logimise ...
 	if(isset($_POST["login_submit"])){
 		$notice = sign_in($_POST["email_input"], $_POST["password_input"]);
+	}
+	if($_SERVER["REQUEST_METHOD"] === "POST"){
+        if(isset($_POST["login_submit"])){
+			//kontrollime sisestusi
+			if(isset($_POST["email_input"]) and !empty($_POST["email_input"])){
+				$email = validate(filter_var($_POST["email_input"], FILTER_VALIDATE_EMAIL));
+				if(empty($email)){
+					$email_error = "Palun sisesta oma e-post!";
+				}
+			} else {
+				$email_error = "Palun sisesta oma e-post!";
+			}
+			if(isset($_POST["password_input"]) and !empty($_POST["password_input"])){
+				//string length
+				if(strlen($_POST["password_input"]) < 8){
+					$password_error = "Salasõna on liiga lühike, lol.";
+				}
+			} else {
+				$password_error = "Palun sisesta salasõna!";
+			}
+		}
 	}
 ?>
 
@@ -38,8 +47,8 @@
 	</a>.</p>
 	<hr>
 	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-	<input type="email" name="email_input" placeholder="kasutajatunnus ehk e-post">
-	<input type="password" name="password_input" placeholder="salasõna">
+	<input type="email" name="email_input" placeholder="kasutajatunnus ehk e-post"><span><?php echo $email_error; ?></span>
+	<input type="password" name="password_input" placeholder="salasõna"><span><?php echo $password_error; ?></span>
 	<input type="submit" name="login_submit" value="Logi sisse">
 	<hr>
 </body>

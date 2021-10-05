@@ -24,6 +24,7 @@
     $email_error = null;
     $password_error = null;
     $confirm_password_error = null;
+	$olemas = null;
 
     //kontrollime sisestust
     if($_SERVER["REQUEST_METHOD"] === "POST"){
@@ -114,10 +115,16 @@
 			} else {
 				$confirm_password_error = "Palun sisesta salasõna teist korda veel";
 			}
-			
+			$conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+			$conn->set_charset("utf8");
+			$stmt = $conn->prepare("SELECT id FROM vpr_users WHERE email = ?");
 			//kui kõik korras, salvestame
 			if(empty($firstname_error) and empty($surname_error) and empty($birth_month_error) and empty($_birth_year_error) and empty($birth_day_error) and empty($birth_date_error) and empty($gender_error) and empty($email_error) and empty($password_error) and empty($confirm_password_error)){
+				if($stmt->fetch()){
+					$olemas = "See konto on juba olemas, lol";
+				} else{
 				$notice = sign_up($firstname, $surname, $email, $gender, $birth_date, $_POST["password_input"]);
+				}
 			}
 			
         }//if isset lõppeb
@@ -199,7 +206,8 @@
 	  <input name="password_input" id="password_input" type="password"><span><?php echo $password_error; ?></span><br>
 	  <label for="confirm_password_input">Korrake salasõna:</label><br>
 	  <input name="confirm_password_input" id="confirm_password_input" type="password"><span><?php echo $confirm_password_error; ?></span><br>
-	  <input name="user_data_submit" type="submit" value="Loo kasutaja"><span><?php echo $notice; ?></span>
+	  <input name="user_data_submit" type="submit" value="Loo kasutaja"><span><?php echo $notice; ?></span><br>
+	  <p><?php echo $olemas; ?></p>
 	</form>
 	<hr>
     <p>Tagasi <a href="page.php">avalehele</a></p>
