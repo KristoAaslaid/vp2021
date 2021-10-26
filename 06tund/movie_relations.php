@@ -12,7 +12,7 @@
     }
 	
     require_once("../../../config.php");
-    require_once("fnc_user.php");
+    require_once("fnc_movie.php");
 	require_once("fnc_general.php");
 	
 	$notice = null;
